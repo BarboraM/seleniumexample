@@ -27,8 +27,6 @@ public class RukovoditelTest {
         ChromeOptions cho = new ChromeOptions();
         boolean runOnTravis = false;
         boolean windows = true;
-        ChromeDriver driver;
-
 
         if (runOnTravis) {
             cho.addArguments("--headless");
@@ -42,7 +40,6 @@ public class RukovoditelTest {
             }
         }
         driver = new ChromeDriver(cho);
-
         wait = new WebDriverWait(driver, 3);
     }
 
@@ -71,6 +68,10 @@ public class RukovoditelTest {
     public void createProject(String name){
         driver.get(URL+"index.php?module=items/items&path=21");
 
+        WebElement addProjectButton = driver.findElement(By.className("btn-primary"));
+        addProjectButton.click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".modal-body")));
+
         // Select Priority
         Select prioritySelect = new Select(driver.findElement(By.id("fields_156")));
         prioritySelect.selectByVisibleText("High");
@@ -91,7 +92,10 @@ public class RukovoditelTest {
     }
 
     public void findProject(String name){
+
         driver.get(URL+"index.php?module=items/items&path=21");
+
+        WebElement searchTable = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".table")));
 
         WebElement nameInput = driver.findElementByName("entity_items_listing66_21_search_keywords");
         nameInput.clear();
@@ -99,17 +103,14 @@ public class RukovoditelTest {
         WebElement searchButton = driver.findElement(By.cssSelector(".fa-search"));
         searchButton.click();
 
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("#slimScroll tbody")));
-        List<WebElement> rows = driver.findElements(By.cssSelector("table tr"));
-        WebElement tableRow = driver.findElement(By.cssSelector("#slimScroll tbody tr:nth-child(1)"));
-        List<WebElement> tableData = tableRow.findElements(By.tagName("td"));
+        wait.until(ExpectedConditions.stalenessOf(searchTable));
     }
 
     public void deleteProject(String projectName){
 
         findProject(projectName);
 
-        WebElement deleteIcon = driver.findElement(By.cssSelector("fa-trash-o"));
+        WebElement deleteIcon = driver.findElement(By.cssSelector(".table .fa-trash-o"));
         deleteIcon.click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("ajax-modal")));
 

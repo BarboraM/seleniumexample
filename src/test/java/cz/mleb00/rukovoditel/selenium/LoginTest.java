@@ -1,11 +1,15 @@
 package cz.mleb00.rukovoditel.selenium;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 public class LoginTest extends RukovoditelTest {
+
 
     @Test
     public void successfulLogin() {
@@ -14,7 +18,7 @@ public class LoginTest extends RukovoditelTest {
         validLogin();
 
         //Then
-        Assert.assertEquals(driver.getTitle(), "Rukovoditel | Dashboard");
+        Assert.assertEquals("Rukovoditel | Dashboard", driver.getTitle());
 
         WebElement userDropdown = driver.findElement(By.cssSelector(".dropdown.user"));
         Assert.assertTrue(userDropdown.isDisplayed());
@@ -24,14 +28,14 @@ public class LoginTest extends RukovoditelTest {
     public void invalidPassword() {
 
         //Given When
-        validLogin();
+        login("rukovoditel", "invalidPassword");
 
         //Then
         Assert.assertEquals(driver.getTitle(), "Rukovoditel");
 
         WebElement alertDiv = driver.findElement(By.cssSelector(".alert-danger"));
         Assert.assertTrue(alertDiv.isDisplayed());
-        Assert.assertEquals(alertDiv.getText(),"No match for Username and/or Password.");
+        Assert.assertTrue(alertDiv.getText().contains("No match for Username and/or Password."));
     }
 
     @Test

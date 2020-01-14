@@ -29,6 +29,8 @@ public class ProjectTest extends RukovoditelTest {
         WebElement addProjectButton = driver.findElement(By.className("btn-primary"));
         addProjectButton.click();
 
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".modal-body")));
+
         WebElement saveButton = driver.findElement(By.className("btn-primary-modal-action"));
         saveButton.click();
 
