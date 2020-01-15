@@ -27,7 +27,7 @@ public class RukovoditelTest {
     public void init(){
 
         ChromeOptions cho = new ChromeOptions();
-        boolean runOnTravis = false;
+        boolean runOnTravis = true;
         boolean windows = true;
 
         if (runOnTravis) {
