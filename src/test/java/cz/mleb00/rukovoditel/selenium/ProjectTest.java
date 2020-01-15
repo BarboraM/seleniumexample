@@ -5,12 +5,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,19 +18,14 @@ public class ProjectTest extends RukovoditelTest {
 
         //Given
         validLogin();
+        projectName = "";
 
         // When
-        driver.get(URL+"index.php?module=items/items&path=21");
-        WebElement addProjectButton = driver.findElement(By.className("btn-primary"));
-        addProjectButton.click();
-
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".modal-body")));
-
-        WebElement saveButton = driver.findElement(By.className("btn-primary-modal-action"));
-        saveButton.click();
+        driver.get(PROJECTS_URL);
+        createProject(projectName);
 
         //Then
-        WebElement projectNameErrorLabel = driver.findElement(By.cssSelector("#fields_158-error"));
+        WebElement projectNameErrorLabel = driver.findElement(By.id("fields_158-error"));
         Assert.assertEquals("This field is required!", projectNameErrorLabel.getText());
     }
 
@@ -57,6 +47,7 @@ public class ProjectTest extends RukovoditelTest {
         //Find project
         findProject(projectName);
 
+        //Verify that the project was found
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("#slimScroll tbody")));
         List<WebElement> rows = driver.findElements(By.cssSelector("table tr"));
         Assert.assertFalse(rows.isEmpty());
@@ -65,7 +56,7 @@ public class ProjectTest extends RukovoditelTest {
         List<WebElement> tableData = tableRow.findElements(By.tagName("td"));
         Assert.assertEquals(projectName, tableData.get(4).getText());
 
-        //Delete
+        //Delete project
         deleteProject(projectName);
     }
 

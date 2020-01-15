@@ -13,13 +13,15 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 public class RukovoditelTest {
 
-    public ChromeDriver driver;
-    public WebDriverWait wait;
-    public static String URL = "https://digitalnizena.cz/rukovoditel/";
+    protected ChromeDriver driver;
+    protected WebDriverWait wait;
+    protected static String BASE_URL = "https://digitalnizena.cz/rukovoditel/";
+    protected static String PROJECTS_URL = BASE_URL +"index.php?module=items/items&path=21";
+    private static String VALID_USERNAME = "rukovoditel";
+    private static String VALID_PASSWORD = "vse456ru";
 
     @Before
     public void init(){
@@ -50,7 +52,8 @@ public class RukovoditelTest {
 
     public void login(String username, String password){
 
-        driver.get(URL);
+        //Get login page URL
+        driver.get(BASE_URL);
 
         WebElement usernameInput = driver.findElement(By.name("username"));
         usernameInput.sendKeys(username);
@@ -62,12 +65,15 @@ public class RukovoditelTest {
     }
 
     public void validLogin(){
-        login("rukovoditel", "vse456ru");
+        login(VALID_USERNAME, VALID_PASSWORD);
     }
 
     public void createProject(String name){
-        driver.get(URL+"index.php?module=items/items&path=21");
 
+        //get projects page URL
+        driver.get(PROJECTS_URL);
+
+        //Open form for a new project
         WebElement addProjectButton = driver.findElement(By.className("btn-primary"));
         addProjectButton.click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".modal-body")));
@@ -86,17 +92,18 @@ public class RukovoditelTest {
         WebElement dateInput = driver.findElement(By.id("fields_159"));
         dateInput.sendKeys(dateFormat.format(date));
 
+        //Save project
         WebElement saveButton = driver.findElement(By.className("btn-primary-modal-action"));
         saveButton.click();
-
     }
 
     public void findProject(String name){
 
-        driver.get(URL+"index.php?module=items/items&path=21");
-
+        //get projects page URL
+        driver.get(PROJECTS_URL);
         WebElement searchTable = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".table")));
 
+        //Search project by name
         WebElement nameInput = driver.findElementByName("entity_items_listing66_21_search_keywords");
         nameInput.clear();
         nameInput.sendKeys(name);
@@ -110,10 +117,12 @@ public class RukovoditelTest {
 
         findProject(projectName);
 
-        WebElement deleteIcon = driver.findElement(By.cssSelector(".table .fa-trash-o"));
-        deleteIcon.click();
+        //Click on trash icon
+        WebElement trashIcon = driver.findElement(By.cssSelector(".table .fa-trash-o"));
+        trashIcon.click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("ajax-modal")));
 
+        //Confirm deletion
         WebElement deleteCheckbox = driver.findElement(By.id("delete_confirm"));
         deleteCheckbox.click();
         WebElement confirmDeleteButton = driver.findElement(By.className("btn-primary-modal-action"));

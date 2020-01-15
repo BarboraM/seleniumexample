@@ -1,12 +1,10 @@
 package cz.mleb00.rukovoditel.selenium;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
+
 
 public class LoginTest extends RukovoditelTest {
 
@@ -14,7 +12,8 @@ public class LoginTest extends RukovoditelTest {
     @Test
     public void successfulLogin() {
 
-        //Given When
+        //Given
+        //When
         validLogin();
 
         //Then
@@ -27,12 +26,14 @@ public class LoginTest extends RukovoditelTest {
     @Test
     public void invalidPassword() {
 
-        //Given When
+        //Given
+        // When
         login("rukovoditel", "invalidPassword");
 
         //Then
         Assert.assertEquals(driver.getTitle(), "Rukovoditel");
 
+        //Verify alert is displayed
         WebElement alertDiv = driver.findElement(By.cssSelector(".alert-danger"));
         Assert.assertTrue(alertDiv.isDisplayed());
         Assert.assertTrue(alertDiv.getText().contains("No match for Username and/or Password."));
@@ -44,12 +45,18 @@ public class LoginTest extends RukovoditelTest {
         //Given When
         validLogin();
 
-        WebElement logoffLink = driver.findElement(By.cssSelector(".dropdown.user .fa.fa-sign-out"));
+        //When
+        WebElement dropdownLink = driver.findElement(By.cssSelector(".dropdown.user .dropdown-toggle"));
+        dropdownLink.click();
+
+        //Click on Logoff
+        WebElement logoffLink = driver.findElement(By.cssSelector(".fa-sign-out"));
         logoffLink.click();
 
         //Then
         Assert.assertEquals(driver.getTitle(), "Rukovoditel");
 
+        //Verify login form is displayed
         WebElement loginForm = driver.findElement(By.cssSelector("#login_form"));
         Assert.assertTrue(loginForm.isDisplayed());
     }
